@@ -1,4 +1,5 @@
 import type { ARScene } from "./ARScene"
+import type { PerspectiveCamera } from "three"
 
 export class PerformanceOptimizer {
   constructor(private mode: "balanced" | "quality" | "performance") {}
@@ -12,7 +13,7 @@ export class PerformanceOptimizer {
     console.log(`Optimizing scene for ${this.mode} mode`)
 
     const renderer = scene["renderer"]
-    const camera = scene["camera"]
+    const camera = scene["camera"] as PerspectiveCamera
 
     switch (this.mode) {
       case "quality":
@@ -46,8 +47,10 @@ export class PerformanceOptimizer {
 
   private optimizeForMobile(scene: ARScene): void {
     const renderer = scene["renderer"]
+    const camera = scene["camera"] as PerspectiveCamera
     renderer.setPixelRatio(1)
     renderer.setSize(window.innerWidth, window.innerHeight)
+    camera.updateProjectionMatrix()
   }
 }
 

@@ -1,4 +1,5 @@
 import * as THREE from "three"
+import { PerspectiveCamera } from "three"
 import { ARMarker } from "./ARMarker"
 import { ARObject } from "./ARObject"
 import type { GestureRecognizer } from "./GestureRecognizer"
@@ -6,7 +7,7 @@ import type { PerformanceOptimizer } from "./PerformanceOptimizer"
 
 export class ARScene {
   private scene: THREE.Scene
-  private camera: THREE.Camera
+  private camera: PerspectiveCamera
   private renderer: THREE.WebGLRenderer
   private markers: Map<string, ARMarker> = new Map()
   private objects: Map<string, ARObject> = new Map()
@@ -18,7 +19,7 @@ export class ARScene {
     private performanceOptimizer: PerformanceOptimizer,
   ) {
     this.scene = new THREE.Scene()
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+    this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     this.renderer.setSize(window.innerWidth, window.innerHeight)
 
