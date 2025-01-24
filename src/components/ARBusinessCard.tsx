@@ -1,6 +1,6 @@
 import type React from "react"
 import { useEffect, useRef } from "react"
-import { VizuantSDK } from "../vizuant-sdk" // Update this import path
+import { VizuantSDK } from "../sdk/vizuant-sdk"
 
 interface ARBusinessCardProps {
   name: string
@@ -30,19 +30,13 @@ export const ARBusinessCard: React.FC<ARBusinessCardProps> = ({ name, title, com
 
       const marker = arScene.createMarker("business-card-marker", markerImage)
 
-      // Create a simple 3D text object for the business card info
-      const loader = new THREE.FontLoader()
-      loader.load("/path/to/helvetiker_regular.typeface.json", (font) => {
-        const textGeometry = new THREE.TextGeometry(`${name}\n${title}\n${company}\n${email}\n${phone}`, {
-          font: font,
-          size: 0.1,
-          height: 0.01,
-        })
-        const textMaterial = new THREE.MeshPhongMaterial({ color: 0x000000 })
-        const textMesh = new THREE.Mesh(textGeometry, textMaterial)
-        textMesh.position.set(-0.5, 0, -0.5)
-        marker.add(textMesh)
-      })
+      // Create a text object for the business card info
+      const textObject = sdkRef.current.createARObject("business-card-text", "")
+      textObject.setText(`${name}\n${title}\n${company}\n${email}\n${phone}`)
+      textObject.setPosition(-0.5, 0, -0.5)
+      textObject.setScale(0.1, 0.1, 0.1)
+
+      marker.addChild(textObject)
 
       sdkRef.current.startARSession()
 

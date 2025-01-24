@@ -1,5 +1,3 @@
-"use client"
-
 import type React from "react"
 import { useEffect, useRef, useState } from "react"
 import { VizuantSDK } from "../sdk/vizuant-sdk"
@@ -75,7 +73,7 @@ export const VizuantExample: React.FC = () => {
         sdkRef.current.startARSession()
       } catch (error) {
         console.error("Failed to initialize AR experience:", error)
-        setError(`Failed to initialize AR experience: ${error.message}`)
+        setError(`Failed to initialize AR experience: ${error instanceof Error ? error.message : String(error)}`)
       }
     }
 
