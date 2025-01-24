@@ -12,19 +12,16 @@ import { PerformanceOptimizer } from "./ar/PerformanceOptimizer"
 export class VizuantSDK {
   private config: VizuantConfig
   private arScene: ARScene | null = null
-  private gestureRecognizer: GestureRecognizer | null = null
-  private persistenceManager: ARPersistenceManager | null = null
-  private collaborationManager: CollaborationManager | null = null
-  private analyticsManager: AnalyticsManager | null = null
-  private modelLoader: ModelLoader | null = null
-  private performanceOptimizer: PerformanceOptimizer | null = null
+  private gestureRecognizer: GestureRecognizer
+  private persistenceManager: ARPersistenceManager
+  private collaborationManager: CollaborationManager
+  private analyticsManager: AnalyticsManager
+  private modelLoader: ModelLoader
+  private performanceOptimizer: PerformanceOptimizer
+  private initialized = false
 
   constructor(config: Partial<VizuantConfig> = {}) {
     this.config = { ...defaultConfig, ...config }
-  }
-
-  initialize(): void {
-    console.log("Initializing Vizuant SDK with config:", this.config)
     this.gestureRecognizer = new GestureRecognizer(this.config.arSettings.enableGestures)
     this.persistenceManager = new ARPersistenceManager(this.config.arSettings.enablePersistence)
     this.collaborationManager = new CollaborationManager(this.config.arSettings.enableCollaboration)
@@ -33,23 +30,43 @@ export class VizuantSDK {
     this.performanceOptimizer = new PerformanceOptimizer(this.config.arSettings.performanceMode)
   }
 
+  initialize(): void {
+    console.log("Initializing Vizuant SDK with config:", this.config)
+    this.initialized = true
+  }
+
   createARScene(containerId: string): ARScene {
-    this.arScene = new ARScene(containerId, this.config.arSettings, this.gestureRecognizer!, this.performanceOptimizer!)
-    return this.arScene
+    try {
+      this.arScene = new ARScene(containerId, this.config.arSettings, this.gestureRecognizer, this.performanceOptimizer)
+      return this.arScene
+    } catch (error) {
+      console.error("Failed to create AR scene:", error)
+      throw new Error(`Failed to create AR scene: ${error.message}`)
+    }
   }
 
   createARMarker(markerId: string, markerImage: string): ARMarker {
     if (!this.arScene) {
       throw new Error("AR Scene must be created before adding markers")
     }
-    return this.arScene.createMarker(markerId, markerImage)
+    try {
+      return this.arScene.createMarker(markerId, markerImage)
+    } catch (error) {
+      console.error("Error creating AR marker:", error)
+      throw error
+    }
   }
 
   createARObject(objectId: string, objectUrl: string): ARObject {
     if (!this.arScene) {
       throw new Error("AR Scene must be created before adding objects")
     }
-    return this.arScene.createObject(objectId, objectUrl)
+    try {
+      return this.arScene.createObject(objectId, objectUrl)
+    } catch (error) {
+      console.error("Error creating AR object:", error)
+      throw error
+    }
   }
 
   startARSession(): void {

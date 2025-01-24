@@ -1,9 +1,19 @@
 import * as THREE from "three"
-import { ARToolkitSource, ARToolkitContext } from "@ar-js-org/ar.js/three.js/build/ar-threex.js"
+import "@ar-js-org/ar.js"
 import { ARMarker } from "./ARMarker"
 import { ARObject } from "./ARObject"
 import type { GestureRecognizer } from "./GestureRecognizer"
 import type { PerformanceOptimizer } from "./PerformanceOptimizer"
+
+declare global {
+  interface Window {
+    THREEx: {
+      ArToolkitContext: any
+      ArToolkitSource: any
+      ArMarkerControls: any
+    }
+  }
+}
 
 export class ARScene {
   private container: HTMLElement
@@ -12,8 +22,8 @@ export class ARScene {
   private scene: THREE.Scene
   private camera: THREE.Camera
   private renderer: THREE.WebGLRenderer
-  private arToolkitSource: ARToolkitSource
-  private arToolkitContext: ARToolkitContext
+  private arToolkitSource: any
+  private arToolkitContext: any
 
   constructor(
     containerId: string,
@@ -27,51 +37,93 @@ export class ARScene {
     }
     this.container = container
 
-    try {
-      this.initializeScene()
-    } catch (error) {
-      console.error("Failed to initialize AR scene:", error)
-      this.showErrorMessage("Failed to initialize AR. Please check your device compatibility.")
-    }
+    this.initializeScene()
   }
 
   private initializeScene(): void {
-    this.scene = new THREE.Scene()
-    this.camera = new THREE.Camera()
-    this.scene.add(this.camera)
+    try {
+      this.checkARJSAvailability()
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-    this.renderer.setSize(window.innerWidth, window.innerHeight)
-    this.container.appendChild(this.renderer.domElement)
+      this.scene = new THREE.Scene()
+      this.camera = new THREE.Camera()
+      this.scene.add(this.camera)
 
-    this.arToolkitSource = new ARToolkitSource({
+      this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+      this.renderer.setSize(window.innerWidth, window.innerHeight)
+      this.container.appendChild(this.renderer.domElement)
+
+      this.initializeARToolkit()
+
+      window.addEventListener("resize", () => this.onResize())
+    } catch (error) {
+      console.error("Failed to initialize AR scene:", error)
+      this.showErrorMessage(`Failed to initialize AR: ${error.message}`)
+      throw error
+    }
+  }
+
+  private checkARJSAvailability(): void {
+    if (typeof window.THREEx === "undefined" || !window.THREEx.ArToolkitContext) {
+      throw new Error("AR.js is not loaded. Make sure to include the AR.js script in your HTML file.")
+    }
+  }
+
+  private initializeARToolkit(): void {
+    this.arToolkitSource = new window.THREEx.ArToolkitSource({
       sourceType: "webcam",
     })
 
-    this.arToolkitContext = new ARToolkitContext({
-      cameraParametersUrl: "data/camera_para.dat",
+    this.arToolkitContext = new window.THREEx.ArToolkitContext({
+      cameraParametersUrl: "https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/data/camera_para.dat",
       detectionMode: "mono",
     })
 
-    window.addEventListener("resize", () => this.onResize())
+    this.arToolkitSource.init(
+      () => {
+        this.onResize()
+      },
+      (error: Error) => {
+        console.error("Failed to initialize AR source:", error)
+        this.showErrorMessage("Failed to access camera. Please check your permissions and try again.")
+      },
+    )
+
+    this.arToolkitContext.init(() => {
+      this.camera.projectionMatrix.copy(this.arToolkitContext.getProjectionMatrix())
+    })
   }
 
   createMarker(markerId: string, markerImage: string): ARMarker {
     try {
+      console.log(`Creating marker with ID: ${markerId} and image: ${markerImage}`)
+
       const marker = new ARMarker(markerId, markerImage)
       this.markers.set(markerId, marker)
 
       const markerRoot = new THREE.Group()
       this.scene.add(markerRoot)
-      const markerControls = new (window as any).THREEx.ArMarkerControls(this.arToolkitContext, markerRoot, {
+
+      new window.THREEx.ArMarkerControls(this.arToolkitContext, markerRoot, {
         type: "pattern",
         patternUrl: markerImage,
       })
 
+      // Verify marker image accessibility
+      const markerImg = new Image()
+      markerImg.onload = () => {
+        console.log(`Marker image loaded successfully: ${markerImage}`)
+      }
+      markerImg.onerror = () => {
+        throw new Error(`Failed to load marker image: ${markerImage}. Please check the URL.`)
+      }
+      markerImg.src = markerImage
+
+      console.log(`Marker created successfully: ${markerId}`)
       return marker
     } catch (error) {
       console.error("Failed to create AR marker:", error)
-      throw new Error("Failed to create AR marker. Please try again.")
+      this.showErrorMessage(`Failed to create AR marker: ${error.message}`)
+      throw error
     }
   }
 
@@ -98,6 +150,7 @@ export class ARScene {
       return object
     } catch (error) {
       console.error("Failed to create AR object:", error)
+      this.showErrorMessage(`Failed to create AR object: ${error.message}`)
       throw new Error("Failed to create AR object. Please try again.")
     }
   }

@@ -19,7 +19,7 @@ export interface VizuantConfig {
 export const defaultConfig: VizuantConfig = {
   apiKey: "",
   baseUrl: "https://api.vizuant.com",
-  version: "1.0.0",
+  version: "0.1.0",
   arSettings: {
     experienceType: "marker",
     markerType: "image",
