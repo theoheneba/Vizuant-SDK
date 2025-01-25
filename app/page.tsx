@@ -1,6 +1,6 @@
 "use client"
 
-import { ARBusinessCard } from "@/components/ARBusinessCard"
+import { ARBusinessCard } from "@/src/components/ARBusinessCard"
 
 export default function Home() {
   return (
