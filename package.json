@@ -1,11 +1,13 @@
 {
   "name": "@theoheneba/vizuant",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A powerful augmented reality SDK for web applications, enabling immersive AR experiences with Three.js and React",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "private": false,
   "scripts": {
     "build": "tsup",
