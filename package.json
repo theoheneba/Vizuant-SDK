@@ -13,7 +13,9 @@
     "test": "jest",
     "lint": "eslint src/**/*.ts",
     "build:sdk": "tsup src/vizuant/index.ts --format cjs,esm --dts --clean",
-    "publish:both": "npm publish --registry=https://registry.npmjs.org && npm publish --registry=https://npm.pkg.github.com"
+    "publish:npm": "npm publish --registry=https://registry.npmjs.org --access public",
+    "publish:github": "npm publish --registry=https://npm.pkg.github.com --access public",
+    "publish:both": "npm run publish:npm && npm run publish:github"
   },
   "dependencies": {
     "three": "^0.137.0"
