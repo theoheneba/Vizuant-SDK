@@ -13,7 +13,6 @@ Vizuant SDK is a powerful tool for creating augmented reality (AR) experiences i
 - [License](#license)
 
 ![AR Demo](https://d3i2s57s2jetfw.cloudfront.net/wp-content/uploads/2025/01/b4efa85bffd4d66c5ea0ec7cfa0bf684-1200x0-c-default.jpg)
-
 ## Installation
 
 To install Vizuant SDK, you need to authenticate with GitHub Package Registry. Follow these steps:
