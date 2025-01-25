@@ -1,19 +1,28 @@
-import type { Metadata } from 'next'
-import './globals.css'
+import type { Metadata } from "next"
+import { Inter } from "next/font/google"
+import "./globals.css"
+import { ThemeProvider } from "@/components/theme-provider"
+
+const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
+  title: "Vizuant SDK",
+  description: "Augmented Reality SDK for web applications",
 }
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} min-h-screen bg-background`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <main className="container mx-auto p-4">{children}</main>
+        </ThemeProvider>
+      </body>
     </html>
   )
 }
+

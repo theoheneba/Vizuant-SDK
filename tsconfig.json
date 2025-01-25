@@ -12,17 +12,14 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
+    "jsx": "react",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
       "@/src/*": ["./src/*"]
-    },
-    "declaration": true,
-    "outDir": "./dist"
+    }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/vizuant/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", "dist"]
 }
 

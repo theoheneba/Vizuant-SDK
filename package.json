@@ -7,19 +7,16 @@
   "types": "dist/index.d.ts",
   "files": ["dist"],
   "private": false,
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "scripts": {
     "build": "tsup",
     "prepublishOnly": "npm run build",
     "test": "jest",
     "lint": "eslint src/**/*.ts",
-    "build:sdk": "tsup src/vizuant/index.ts --format cjs,esm --dts --clean"
+    "build:sdk": "tsup src/vizuant/index.ts --format cjs,esm --dts --clean",
+    "publish:both": "npm publish --registry=https://registry.npmjs.org && npm publish --registry=https://npm.pkg.github.com"
   },
   "dependencies": {
-    "three": "^0.137.0",
-    "@theoheneba/vizuant": "^0.1.3"
+    "three": "^0.137.0"
   },
   "devDependencies": {
     "@swc/core": "^1.3.96",
@@ -59,8 +56,8 @@
     "marker-based-ar"
   ],
   "author": {
-    "name": "Theo Heneba",
-    "email": "theo@heneba.com",
+    "name": "Oheneba Kumi-Prempeh",
+    "email": "info@oheneba.co.za",
     "url": "https://github.com/theoheneba"
   },
   "license": "MIT",
@@ -69,4 +66,3 @@
   },
   "homepage": "https://github.com/theoheneba/Vizuant-SDK#readme"
 }
-

@@ -11,7 +11,6 @@ Vizuant SDK is a powerful tool for creating augmented reality (AR) experiences i
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [License](#license)
-- [Vizuant SDK Integration](#vizuant-sdk-integration)
 
 ## Installation
 
@@ -23,33 +22,4 @@ To install Vizuant SDK, you need to authenticate with GitHub Package Registry. F
    - Copy the token
 
 2. Authenticate with GitHub Packages by creating or editing the `.npmrc` file in your project root:
-
-
-## Vizuant SDK Integration
-
-This project now includes the Vizuant SDK for creating augmented reality experiences. To use the SDK in your Next.js components:
-
-\`\`\`typescript
-import { VizuantSDK } from '../src/vizuant';
-
-const sdk = new VizuantSDK({
-  apiKey: 'your-api-key',
-  arSettings: {
-    experienceType: 'marker',
-    // ... other settings
-  }
-});
-
-sdk.initialize();
-const scene = sdk.createARScene('ar-container');
-// ... use other SDK methods as needed
-\`\`\`
-
-To build the SDK separately:
-
-\`\`\`bash
-npm run build:sdk
-\`\`\`
-
-This will generate the SDK files in the `dist` directory.
 
